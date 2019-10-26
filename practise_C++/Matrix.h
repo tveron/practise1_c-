@@ -1,92 +1,87 @@
+
+
 #pragma once
 
 #include "Base.h"
-#include <cstddef>
 #include <tuple>
 
 namespace mat_vec {
 
-    class Matrix {
-    public:
+	class Matrix {
+	public:
+		// Конструирует матрицу с размерами size x size, заполненную value
+		explicit Matrix(size_t size, double value = 0);
 
-        size_t _size;
-        size_t _rows;
-        size_t _cols;
-        double* _data;
+		// Возвращает единичную матрицу
+		static Matrix eye(size_t size);
 
-        Matrix();
-        // РљРѕРЅСЃС‚СЂСѓРёСЂСѓРµС‚ РјР°С‚СЂРёС†Сѓ СЃ СЂР°Р·РјРµСЂР°РјРё size x size, Р·Р°РїРѕР»РЅРµРЅРЅСѓСЋ value
-        explicit Matrix(size_t size, double value = 0);
+		// Возвращает матрицу с размерами rows x cols, заполненную value
+		Matrix(size_t rows, size_t cols, double value = 0);
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ РµРґРёРЅРёС‡РЅСѓСЋ РјР°С‚СЂРёС†Сѓ
-        static Matrix eye(size_t size);
+		// Конструктор копирования
+		Matrix(const Matrix& src);
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°С‚СЂРёС†Сѓ СЃ СЂР°Р·РјРµСЂР°РјРё rows x cols, Р·Р°РїРѕР»РЅРµРЅРЅСѓСЋ value
-        Matrix(size_t rows, size_t cols, double value = 0);
+		// Оператор присваивания
+		Matrix& operator=(const Matrix& rhs);
 
-        // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
-        Matrix(const Matrix &src);
+		// Деструктор
+		~Matrix();
 
-        // РћРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
-        Matrix &operator=(const Matrix &rhs);
+		// Изменяет ширину и высоту матрицы, не изменяя при этом
+		// порядок следования элементов от левого верхнего к правому нижнему:
+		//
+		// [1 2 3] -> [1 2]
+		// [4 5 6] -> [3 4]
+		//            [5 6]
+		void reshape(size_t rows, size_t cols);
 
-        // Р”РµСЃС‚СЂСѓРєС‚РѕСЂ
-        ~Matrix();
+		// Возвращает пару {rows, cols} -- количество строк и столбцов матрицы
+		std::pair<size_t, size_t> shape() const;
 
-        // РР·РјРµРЅСЏРµС‚ С€РёСЂРёРЅСѓ Рё РІС‹СЃРѕС‚Сѓ РјР°С‚СЂРёС†С‹, РЅРµ РёР·РјРµРЅСЏСЏ РїСЂРё СЌС‚РѕРј
-        // РїРѕСЂСЏРґРѕРє СЃР»РµРґРѕРІР°РЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ РѕС‚ Р»РµРІРѕРіРѕ РІРµСЂС…РЅРµРіРѕ Рє РїСЂР°РІРѕРјСѓ РЅРёР¶РЅРµРјСѓ:
-        //
-        // [1 2 3] -> [1 2]
-        // [4 5 6] -> [3 4]
-        //            [5 6]
-        void reshape(size_t rows, size_t cols);
+		// Возвращает элемент на позиции [row, col]
+		double get(size_t row, size_t col) const;
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ РїР°СЂСѓ {rows, cols} -- РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє Рё СЃС‚РѕР»Р±С†РѕРІ РјР°С‚СЂРёС†С‹
-        std::pair<size_t, size_t> shape() const;
+		// Поэлементное сложение
+		Matrix operator+(const Matrix& rhs) const;
+		Matrix& operator+=(const Matrix& rhs);
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ СЌР»РµРјРµРЅС‚ РЅР° РїРѕР·РёС†РёРё [row, col]
-        double get(size_t row, size_t col) const;
+		// Поэлементное вычитание
+		Matrix operator-(const Matrix& rhs) const;
+		Matrix& operator-=(const Matrix& rhs);
 
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ СЃР»РѕР¶РµРЅРёРµ
-        Matrix operator+(const Matrix &rhs) const;
-        Matrix &operator+=(const Matrix &rhs);
+		// Матричное умножение
+		Matrix operator*(const Matrix& rhs) const;
+		Matrix& operator*=(const Matrix& rhs);
 
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ РІС‹С‡РёС‚Р°РЅРёРµ
-        Matrix operator-(const Matrix &rhs) const;
-        Matrix &operator-=(const Matrix &rhs);
+		// Умножение всех элементов матрицы на константу
+		Matrix operator*(double k) const;
+		Matrix& operator*=(double k);
 
-        // РњР°С‚СЂРёС‡РЅРѕРµ СѓРјРЅРѕР¶РµРЅРёРµ
-        Matrix operator*(const Matrix &rhs) const;
-        Matrix &operator*=(const Matrix &rhs);
+		// Деление всех элементов матрицы на константу
+		Matrix operator/(double k) const;
+		Matrix& operator/=(double k);
 
-        // РЈРјРЅРѕР¶РµРЅРёРµ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ РјР°С‚СЂРёС†С‹ РЅР° РєРѕРЅСЃС‚Р°РЅС‚Сѓ
-        Matrix operator*(double k) const;
-        Matrix &operator*=(double k);
+		// Возвращает новую матрицу, полученную транспонированием текущей (this)
+		Matrix transposed() const;
 
-        // Р”РµР»РµРЅРёРµ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ РјР°С‚СЂРёС†С‹ РЅР° РєРѕРЅСЃС‚Р°РЅС‚Сѓ
-        Matrix operator/(double k) const;
-        Matrix &operator/=(double k);
+		// Транспонирует текущую матрицу
+		void transpose();
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅРѕРІСѓСЋ РјР°С‚СЂРёС†Сѓ, РїРѕР»СѓС‡РµРЅРЅСѓСЋ С‚СЂР°РЅСЃРїРѕРЅРёСЂРѕРІР°РЅРёРµРј С‚РµРєСѓС‰РµР№ (this)
-        Matrix transposed() const;
+		// Определитель
+		double det() const;
 
-        // РўСЂР°РЅСЃРїРѕРЅРёСЂСѓРµС‚ С‚РµРєСѓС‰СѓСЋ РјР°С‚СЂРёС†Сѓ
-        void transpose();
+		// Обратная матрица
+		Matrix inv() const;
 
-        // РћРїСЂРµРґРµР»РёС‚РµР»СЊ
-        double det() const;
+		// УМножение матрицы на вектор
+		Vector operator*(const Vector& vec) const;
 
-        // РћР±СЂР°С‚РЅР°СЏ РјР°С‚СЂРёС†Р°
-        Matrix inv() const;
+		// Поэлементное сравнение
+		bool operator==(const Matrix& rhs) const;
+		bool operator!=(const Matrix& rhs) const;
 
-        // РЈРњРЅРѕР¶РµРЅРёРµ РјР°С‚СЂРёС†С‹ РЅР° РІРµРєС‚РѕСЂ
-        Vector operator*(const Vector &vec) const;
-
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ СЃСЂР°РІРЅРµРЅРёРµ
-        bool operator==(const Matrix &rhs) const;
-        bool operator!=(const Matrix &rhs) const;
-
-    private:
-    };
+	private:
+	};
 
 } // namespace mat_vec
+

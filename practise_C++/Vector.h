@@ -1,77 +1,79 @@
+
+
+
 #pragma once
 
 #include "Base.h"
-#include <cstddef>
+
 namespace mat_vec {
 
-// РЈРјРЅРѕР¶РµРЅРёРµ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ РІРµРєС‚РѕСЂР° РЅР° С‡РёСЃР»Рѕ СЃР»РµРІР° (k * v)
-    Vector operator*(double k, const Vector &v);
+	// Умножение всех элементов вектора на число слева (k * v)
+	Vector operator*(double k, const Vector& v);
 
-    class Vector {
-    public:
-        int _size;
-        double* _data;
-        Vector();
+	class Vector {
+	public:
+		// Конструирует вектор размера size со значениями value
+		explicit Vector(size_t size, double value = 0);
 
-        // РљРѕРЅСЃС‚СЂСѓРёСЂСѓРµС‚ РІРµРєС‚РѕСЂ СЂР°Р·РјРµСЂР° size СЃРѕ Р·РЅР°С‡РµРЅРёСЏРјРё value
-        explicit Vector(size_t size, double value = 0);
+		// Конструктор копирования
+		Vector(const Vector& src);
 
-        // РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
-        Vector(const Vector &src);
+		// Оператор присваивания
+		Vector& operator=(const Vector& rhsconst Vector& rhs);
 
-        // РћРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
-        Vector &operator=(const Vector &rhs);
+		// Деструктор
+		~Vector();
 
-        // Р”РµСЃС‚СЂСѓРєС‚РѕСЂ
-        ~Vector();
+		// Возвращает размер вектора
+		size_t size() const;
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ СЂР°Р·РјРµСЂ РІРµРєС‚РѕСЂР°
-        size_t size() const;
+		// Доступ к n-му элементу вектора
+		double operator[](size_t n) const;
+		double& operator[](size_t n);
 
-        // Р”РѕСЃС‚СѓРї Рє n-РјСѓ СЌР»РµРјРµРЅС‚Сѓ РІРµРєС‚РѕСЂР°
-        double operator[](size_t n) const;
-        double &operator[](size_t n);
+		// L2 норма вектора
+		double norm() const;
 
-        // L2 РЅРѕСЂРјР° РІРµРєС‚РѕСЂР°
-        double norm() const;
+		// Возвращает новый вектор, полученный нормализацией текущего (this)
+		Vector normalized() const;
 
-        // Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅРѕРІС‹Р№ РІРµРєС‚РѕСЂ, РїРѕР»СѓС‡РµРЅРЅС‹Р№ РЅРѕСЂРјР°Р»РёР·Р°С†РёРµР№ С‚РµРєСѓС‰РµРіРѕ (this)
-        Vector normalized() const;
+		// Нормализует текущий вектор
+		void normalize();
 
-        // РќРѕСЂРјР°Р»РёР·СѓРµС‚ С‚РµРєСѓС‰РёР№ РІРµРєС‚РѕСЂ
-        void normalize();
+		// Поэлементное сложение векторов
+		Vector operator+(const Vector& rhs) const;
+		Vector& operator+=(const Vector& rhs);
 
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ СЃР»РѕР¶РµРЅРёРµ РІРµРєС‚РѕСЂРѕРІ
-        Vector operator+(const Vector &rhs) const;
-        Vector &operator+=(const Vector &rhs);
+		// Поэлементное вычитание векторов
+		Vector operator-(const Vector& rhs) const;
+		Vector& operator-=(const Vector& rhs);
 
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ РІС‹С‡РёС‚Р°РЅРёРµ РІРµРєС‚РѕСЂРѕРІ
-        Vector operator-(const Vector &rhs) const;
-        Vector &operator-=(const Vector &rhs);
+		// Поэлементное умножение векторов
+		Vector operator^(const Vector& rhs) const;
+		Vector& operator^=(const Vector& rhs);
 
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ СѓРјРЅРѕР¶РµРЅРёРµ РІРµРєС‚РѕСЂРѕРІ
-        Vector operator^(const Vector &rhs) const;
-        Vector &operator^=(const Vector &rhs);
+		// Скалярное произведение
+		double operator*(const Vector& rhs) const;
 
-        // РЎРєР°Р»СЏСЂРЅРѕРµ РїСЂРѕРёР·РІРµРґРµРЅРёРµ
-        double operator*(const Vector &rhs) const;
+		// Умножение всех элементов вектора на скаляр справа (v * k)
+		Vector operator*(double k) const;
+		Vector& operator*=(double k);
 
-        // РЈРјРЅРѕР¶РµРЅРёРµ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ РІРµРєС‚РѕСЂР° РЅР° СЃРєР°Р»СЏСЂ СЃРїСЂР°РІР° (v * k)
-        Vector operator*(double k) const;
-        Vector &operator*=(double k);
+		// Деление всех элементов вектора на скаляр
+		Vector operator/(double k) const;
+		Vector& operator/=(double k);
 
-        // Р”РµР»РµРЅРёРµ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ РІРµРєС‚РѕСЂР° РЅР° СЃРєР°Р»СЏСЂ
-        Vector operator/(double k) const;
-        Vector &operator/=(double k);
+		// Умножение вектора на матрицу
+		Vector operator*(const Matrix& mat) const;
+		Vector& operator*=(const Matrix& mat);
 
-        // РЈРјРЅРѕР¶РµРЅРёРµ РІРµРєС‚РѕСЂР° РЅР° РјР°С‚СЂРёС†Сѓ
-        Vector operator*(const Matrix &mat) const;
-        Vector &operator*=(const Matrix &mat);
+		// Поэлементное сравнение
+		bool operator==(const Vector& rhs) const;
+		bool operator!=(const Vector& rhs) const;
 
-        // РџРѕСЌР»РµРјРµРЅС‚РЅРѕРµ СЃСЂР°РІРЅРµРЅРёРµ
-        bool operator==(const Vector &rhs) const;
-        bool operator!=(const Vector &rhs) const;
+	private:
+		double _vec*[];
+		size_t _size;
 
-    private:
-    };
+	};
 } // namespace mat_vec
